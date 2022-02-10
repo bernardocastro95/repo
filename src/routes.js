@@ -1,0 +1,15 @@
+import React from 'react'
+import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import Main from './pages/main'
+import Repo from './repos'
+
+export default function RouteManager(){
+    return(
+        <BrowserRouter>
+            <Routes>
+                <Route exact path="/" component ={Main}/>
+                <Route exact path="/repo" component ={Repo}/>
+            </Routes>
+        </BrowserRouter>
+    )
+}

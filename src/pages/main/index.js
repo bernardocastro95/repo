@@ -1,12 +1,12 @@
 import React, {useState, useCallback} from 'react'
-import {FaGithub, FaPlus, FaSpinner} from 'react-icons/fa'
-import {Container, Form, SubmitButton} from './styles'
+import {FaGithub, FaPlus, FaSpinner, FaBars, FaTrash} from 'react-icons/fa'
+import {Container, Form, SubmitButton, List, DeleteButton} from './styles'
 import api from '../../services/api'
 
 export default function Main(){
 
     const[newRepo, setNewRepo] = useState('')
-    const[repos, setNewRepos] = useState([])
+    const[repos, setRepos] = useState([])
     const[loading, setLoading] = useState(false)
 
     const handleSubmit = useCallback((e)=>{
@@ -20,7 +20,7 @@ export default function Main(){
                 const data = {
                     name: res.data.full_name,
                 }
-                setNewRepos([...repos, data])
+                setRepos([...repos, data])
                 setNewRepo('')
             }
             catch(err){
@@ -36,6 +36,12 @@ export default function Main(){
     function handleInputChange(e){
         setNewRepo(e.target.value)
     }
+
+    const handleDelete = useCallback((repo) => {
+        const find = repos.filter(r => r.name !== repo)
+        setRepos(find)
+    }, [repos])
+
     return(
         <Container>
             <FaGithub size={25}/>
@@ -57,6 +63,20 @@ export default function Main(){
                     }           
                 </SubmitButton>
             </Form>
+
+            <List>
+                {repos.map(repo=> (
+                    <li key={repo.name}>
+                        <DeleteButton onClick={()=> handleDelete(repo.name)}>
+                            <FaTrash size={14}/>
+                        </DeleteButton>
+                        <span>{repo.name}</span>                        
+                            <a href="">
+                                <FaBars size={20}/>
+                            </a>
+                    </li>
+                ))}
+            </List>
         </Container>
     )
 }

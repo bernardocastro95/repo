@@ -8,7 +8,7 @@ export default function RouteManager(){
         <BrowserRouter>
             <Routes>
                 <Route exact path="/" element ={<Main/>}/>
-                <Route exact path="/repo" element ={<Repo/>}/>
+                <Route exact path="/repo/:repo" element ={<Repo/>}/>
             </Routes>
         </BrowserRouter>
     )

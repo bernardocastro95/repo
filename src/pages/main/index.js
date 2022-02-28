@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {FaGithub, FaPlus, FaSpinner, FaBars, FaTrash} from 'react-icons/fa'
 import {Container, Form, SubmitButton, List, DeleteButton} from './styles'
 import api from '../../services/api'
@@ -8,6 +8,18 @@ export default function Main(){
     const[newRepo, setNewRepo] = useState('')
     const[repos, setRepos] = useState([])
     const[loading, setLoading] = useState(false)
+    const [alert, setAlert] = useState(null)
+
+    useEffect(()=> {
+        const repoStorage = localStorage.getItem('repos')
+        if(repoStorage){
+            setRepos(JSON.parse(repoStorage))
+        }
+    }, [])
+
+    useEffect(()=> {
+        localStorage.setItem('repos', JSON.stringify(repos))
+    }, [repos])
 
     const handleSubmit = useCallback((e)=>{
 
@@ -15,8 +27,18 @@ export default function Main(){
 
         async function submit(){
             setLoading(true)
+            setAlert(null)
             try{
+
+                if(newRepo === ""){
+                    throw new Error("Repo must not be blank")
+                }
                 const res = await api.get(`repos/${newRepo}`)
+                const hasRepo = repos.find(repo => repo.name === newRepo)
+
+                if(hasRepo) {
+                    throw new Error("This repo already exists")
+                }
                 const data = {
                     name: res.data.full_name,
                 }
@@ -24,6 +46,7 @@ export default function Main(){
                 setNewRepo('')
             }
             catch(err){
+                setAlert(true)
                 console.log(err)
             }
             finally{
@@ -35,6 +58,7 @@ export default function Main(){
 
     function handleInputChange(e){
         setNewRepo(e.target.value)
+        setAlert(null)
     }
 
     const handleDelete = useCallback((repo) => {
@@ -47,7 +71,7 @@ export default function Main(){
             <FaGithub size={25}/>
             <h1>My Repos</h1>
 
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} error={alert}>
                 <input type="text" 
                 placeholder='Add repos'
                 value={newRepo}

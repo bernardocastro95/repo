@@ -4,6 +4,16 @@
     // Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "type": "firefox",
+        "request": "attach",
+        "name": "Attach"
+    },
+    {
+        "type": "firefox",
+        "request": "attach",
+        "name": "Attach"
+    },
         {
             "type": "pwa-chrome",
             "request": "launch",

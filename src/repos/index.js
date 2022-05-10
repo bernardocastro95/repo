@@ -2,16 +2,20 @@ import React, {useEffect, useState} from 'react'
 import { Container, Owner, Loading, BackButton, IssuesList} from './styles'
 import api from '../services/api'
 import {FaArrowLeft} from 'react-icons/fa'
+import {useParams} from 'react-router-dom'
 
 
-export default function Repos({match}){
+export default function Repos(){
 
-    const [repo, setRepo] = useState({})
+
+    let {repo} = useParams()
+
+    const [repos, setRepo] = useState({})
     const [issues, setIssue] = useState([])
     const [loading, setLoading] = useState(true)
     useEffect(()=> {
         async function load(){
-            const nameRepo = decodeURIComponent(match.params.repo)
+            const nameRepo = {repo}
 
             const [repoData, issuesData] = await Promise.all([
                 api.get(`/repos/${nameRepo}`),
@@ -28,7 +32,7 @@ export default function Repos({match}){
             setLoading(false)
         }
         load()
-    }, [match.params.repo])
+    }, [{repo}])
 
     if(loading){
         return(
@@ -46,10 +50,10 @@ export default function Repos({match}){
                 <FaArrowLeft color='#fff' size={30}/>
             </BackButton>
             <Owner>
-                <img src={repo.owner.avatar_url} 
-                alt={repo.owner.login}/>
-                <h1>{repo.name}</h1>
-                <p>{repo.description}</p>
+                <img src={repos.owner.avatar_url} 
+                alt={repos.owner.login}/>
+                <h1>{repos.name}</h1>
+                <p>{repos.description}</p>
             </Owner>
 
             <IssuesList>
